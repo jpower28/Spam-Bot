@@ -1,0 +1,199 @@
+
+from tkinter import *
+from pynput.keyboard import Key, Controller
+import time
+
+keyboard = Controller()
+print("This is the console")
+
+
+#window settings
+screen = Tk()
+screen.title("jexcode Spam Bot")
+screen.geometry("425x225")
+screen.resizable(width=False, height=False)
+Spam_text = 0
+Spam_counter = 0
+Delay = 0
+check_1 = False
+check_2 = False
+check_3 = False
+temp = False
+Count = 5
+Toggle_enter = 2
+entercheck = True
+#entry field settings
+IW, bold = "40", "3"
+dumb_user = "Please use positive numbers!"
+
+#functions for widgets
+def Click_1():
+    global check_1, Spam_text
+    Spam_input_check = (Spam_input.get())
+    if len(Spam_input_check) == 0:
+        check_1 = False
+        Spam_text = ()
+        Top_text.config(fg="red")
+    else:
+        Spam_input_check
+        check_1 = True
+        Spam_text = (Spam_input.get())
+        Top_text.config(fg = "green")
+        
+        
+
+
+def Click_2():
+    global Spam_counter, check_2
+    Spam_counter =(Spam_count_input.get())
+    if  Spam_counter.isdigit() == True:
+        Mid_text.config(text=(Mid_words),fg = "green")
+        check_2 = True
+        pass
+    else:
+        Spam_counter = ()
+        Mid_text.config(text=(dumb_user),fg = "red")
+        Spam_count_input.delete(0, 'end')
+        check_2 = False
+
+
+def Click_3():
+    global Delay, check_3
+    Delay =(Delay_input.get())
+    if Delay.isdigit() == True:
+        Bottom_text.config(text=(Bottom_words),fg = "green")
+        check_3 = True
+    else:
+        Delay = ()
+        Bottom_text.config(text=(dumb_user),fg = "red")
+        Delay_input.delete(0, 'end')
+        check_3 = False
+
+
+def Countdown(count):
+    Warning_label.config(text = "Spam will begin in " + str(count)+ ".")
+    if count > 0:
+        screen.after(1000, Countdown, count-1)
+    if count == 1:
+        Warning_label.config(text = "Spaming now")
+    if count == 0:
+        SPAM()
+
+
+def spam_start():
+    if check_1 == True and check_2 == True and check_3 == True:
+        Countdown(Count)
+    else:
+        if check_1 == False:
+            Top_text.config(fg = 'red')
+        if check_2 == False:
+            Mid_text.config(fg = "red")
+        if check_3 == False:
+            Bottom_text.config(fg = "red")
+
+
+def SPAM():
+    x = 0
+    while x <= int(Spam_counter):
+        if x < int(Spam_counter):
+            keyboard.type(str(Spam_text))
+            x += 1
+            if entercheck == True:
+                keyboard.press(Key.enter)
+            else:
+                pass
+            screen.after(1000*(int(Delay)))
+        if x == int(Spam_counter):
+            Clear()
+            Warning_label.config(text =Warning_label_text) 
+            
+
+
+def Clear():
+    global check_1,  check_2,  check_3, Delay, Spam_counter, Spam_text
+    check_1 = False
+    check_2 = False
+    check_3 = False
+    Delay_input.delete(0, 'end')
+    Spam_count_input.delete(0, 'end')
+    Spam_input.delete(0, 'end')
+    Delay = 0
+    Spam_counter = 0
+    Spam_text = 0
+    Top_text.config(text = Top_words, fg = "black")
+    Mid_text.config(text = Mid_words, fg = "black")
+    Bottom_text.config(text = Bottom_words, fg = "black")
+
+
+def Enter_all():
+    Click_1()
+    Click_2()
+    Click_3()
+
+
+def Enter_toggle():
+    global Toggle_enter
+    global entercheck
+    Toggle_enter += 1
+    if (Toggle_enter % 2) == 0:
+        EPC.config(bg="green")
+        entercheck=True
+    else:
+        EPC.config(bg="red")
+        entercheck=False
+
+
+#create widgets
+B_text = "Enter"
+
+Top_words = "What would you like to spam?"
+Top_text = Label(screen, text=Top_words)
+Spam_input = Entry(screen, width = IW, bd = bold)
+Enter_button1 = Button(screen, text=B_text, command=Click_1)
+
+Mid_words = "How many times do you want it to repeat?"
+Mid_text = Label(screen, text=Mid_words)
+Spam_count_input = Entry(screen, width = IW, bd = bold)
+Enter_button2 = Button(screen, text =B_text, command = Click_2)
+
+Bottom_words = "What's the time between spam (in seconds)?"
+Bottom_text = Label(screen, text=Bottom_words)
+Delay_input = Entry(screen, width = IW, bd = bold)
+Enter_button3 = Button(screen, text=B_text, command=Click_3)
+
+close_msg = Label(screen, text='If you need to stop the spam\n  press "ctrl + C" in the console.') 
+
+
+#Enter press check, checkbox for if enter should be pressed
+EPC = Button(screen, text= "Toggle to have Enter pressed after each spam", command=Enter_toggle, bg="green")
+
+#big red starts spam the subsequent buttons are the "control center"
+Big_red= Button(screen, text= "INITIATE\nSPAM", width=12, height=7, bg = "red", font =(20), command = spam_start)
+Clear_button=Button(screen,text=("Clear\nInputs"),width=7, bg ="green", command = Clear)
+Master_Enter=Button(screen,text=("Enter all\nInputs"),width=7,bg="green", command = Enter_all)
+
+Warning_label_text="Spam will begin " + str(Count)+ " seconds after the button is pressed."
+Warning_label = Label(screen, text = Warning_label_text)
+
+#place widgets
+Top_text.grid(row=0,column=0, sticky = "W")
+Enter_button1.grid(row=1,column=2)
+Spam_input.grid(row=1,column=0, sticky = "W")
+
+Mid_text.grid(row=2,column=0, sticky = "W")
+Enter_button2.grid(row=3,column=2)
+Spam_count_input.grid(row=3,column=0, sticky = "W")
+
+Bottom_text.grid(row=4,column=0, sticky = "W")
+Enter_button3.grid(row=5,column=2)
+Delay_input.grid(row=5,column=0, sticky = "W")
+
+Big_red.place(x=300, y=20)
+Master_Enter.place(x = 360, y=165)
+Clear_button.place(x=300, y=165)
+Warning_label.place(x=0,y=170)
+close_msg.place(x=-5,y=190)
+
+EPC.place(x=0,y=141)
+
+screen.mainloop()
