@@ -1,4 +1,3 @@
-Below is the code 
 
 from tkinter import *
 from pynput.keyboard import Key, Controller
